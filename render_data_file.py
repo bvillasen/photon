@@ -15,23 +15,15 @@ from data_functions import *
 import gpu_data
 
 
-data_dir = '/home/bruno/Desktop/ssd_0/data/'
-input_dir = data_dir + 'render_images/ocean/data/'
-output_dir  = data_dir + 'render_images/ocean/'
+output_dir  = '/home/bruno/Desktop/'
+input_file_name = '/home/bruno/Desktop/ssd_0/data/render_images/ocean/data/' + 'mhws_for_bruno.h5'
 
-#Select CUDA Device
-useDevice = 0
 
-in_file_name = input_dir + 'mhws_for_bruno.h5'
-file = h5.File( in_file_name, 'r' )
+file = h5.File( input_file_name, 'r' )
 grid = file['grid'][...]
 n_cut = 70
 grid = grid[n_cut:-n_cut,::]
-vmax, vmin = grid.max(), grid.min()
-zero_point = -vmin / ( vmax - vmin )
 
-# grid[ grid>0] = 0
-# grid = - grid
 
 
 nFields = 1
@@ -58,7 +50,6 @@ volumeRender.render_parameters[0]['transp_type'] = 'linear'
 volumeRender.render_parameters[0]['transp_min'] = 0.0  
 volumeRender.render_parameters[0]['transp_max'] = 1.0  
 volumeRender.render_parameters[0]['output_transfer'] = output_dir
-# volumeRender.render_parameters[0]['zero_point'] = zero_point
   
 
 
@@ -66,8 +57,8 @@ volumeRender.render_parameters[0]['output_transfer'] = output_dir
 nz, ny, nx = data_to_render_list[0].shape
 
 #Initialize openGL
-volumeRender.width_GL = int( 512*3 )
-volumeRender.height_GL = int( 512*3  )
+volumeRender.width_GL = int( 512*2 )
+volumeRender.height_GL = int( 512*2 )
 volumeRender.nTextures = nFields
 volumeRender.nWidth = nx
 volumeRender.nHeight = ny
@@ -76,7 +67,10 @@ volumeRender.scaleX = 1
 volumeRender.scaleY = nx / ny
 volumeRender.scaleZ = nx / nz 
 volumeRender.initGL()
+volumeRender.output_dir = output_dir
 
+#Select CUDA Device
+useDevice = 0
 #initialize pyCUDA context
 cudaDevice = setCudaDevice( devN=useDevice, usingAnimation=True )
 

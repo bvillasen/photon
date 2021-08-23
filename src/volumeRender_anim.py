@@ -111,6 +111,8 @@ c_invViewMatrix = None
 #CUDA Kernels
 render_screen_kernel = None
 
+output_dir = None
+
 
 
 
@@ -119,7 +121,6 @@ def save_image(dir='', image_name='image'):
   glPixelStorei(GL_PACK_ALIGNMENT, 1)
   width = nTextures * width_GL
   data = glReadPixels(0, 0, width, height_GL, GL_RGBA, GL_UNSIGNED_BYTE)
-  print( data )
   image = Image.frombytes("RGBA", (width, height_GL), data)
   image = ImageOps.flip(image) # in my case image is flipped top-bottom for some reason
   image_file_name = '{0}_{1}.png'.format(image_name, n_image)
@@ -185,7 +186,7 @@ def get_model_view_matrix( indx=0 ):
   glMatrixMode(GL_MODELVIEW)
   glPushMatrix()
   glLoadIdentity()
-  # glScalef( scaleX, scaleY, scaleZ )
+  glScalef( scaleX, scaleY, scaleZ )
   glRotatef(-viewRotation[0], 1.0, 0.0, 0.0)
   glRotatef(-viewRotation[1], 0.0, 1.0, 0.0)
   #Steroscopic View
