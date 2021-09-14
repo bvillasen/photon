@@ -22,10 +22,11 @@ from tools import create_directory
 useDevice = 0
 
 
-data_dir = '/home/bruno/Desktop/ssd_0/data/'
+#data_dir = '/home/bruno/Desktop/ssd_0/data/'
+data_dir = '/home/xavier/Desktop/mhws/'
 # data_dir = '/raid/bruno/data/'
 # data_dir = '/data/groups/comp-astro/bruno/'
-output_dir = data_dir + 'render_images/'
+output_dir = os.path.join(data_dir, 'render_images')
 create_directory( output_dir )
 
 

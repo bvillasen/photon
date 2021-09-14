@@ -14,7 +14,7 @@ from cudaTools import setCudaDevice, getFreeMemory, gpuArray3DtocudaArray, np3Dt
 from data_functions import *
 import gpu_data
 
-output_dir  = '/home/bruno/Desktop/'
+output_dir  = '/home/xavier/Desktop/'
 
 #Select CUDA Device
 useDevice = 0
