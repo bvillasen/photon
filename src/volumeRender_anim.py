@@ -69,9 +69,6 @@ colorMap = []
 
 render_parameters = {}
 
-scaleX = 1.0
-scaley = 1.0
-scaleZ = 1.0
 
 rescale_transparency = 0
 
@@ -87,6 +84,8 @@ transferFuncArray_d = None
 
 #Image Parameters
 scaleX = 1
+scaleY = 1
+scaleZ = 1
 separation = 0.
 
 #Ouput Imahe number
@@ -182,7 +181,11 @@ def render(  invViewMatrix_list ):
   
 
 def get_model_view_matrix( indx=0 ):
+  global scaleX, scaleY, scaleZ
   modelView = np.ones(16)
+  scaleX = float(scaleX)
+  scaleY = float(scaleY)
+  scaleZ = float(scaleZ)
   glMatrixMode(GL_MODELVIEW)
   glPushMatrix()
   glLoadIdentity()

@@ -38,7 +38,7 @@ n_image = 0
 data_to_render_list = [ get_Data_to_Render( data_parameters ) for i in range(nFields)]
 
 
-volumeRender.render_parameters[0] = { 'transp_type':'flat', 'colormap':{}, 'transp_center':0.5, "transp_ramp": 1, 'density':.05, "brightness":1.0, 'transfer_offset': 0.0, 'transfer_scale': 1. }
+volumeRender.render_parameters[0] = { 'transp_type':'flat',  'density':.005, "brightness":1.1, 'transfer_offset': 0.0, 'transfer_scale': 1. }
 volumeRender.render_parameters[0]['colormap'] = 'jet'
 
 
