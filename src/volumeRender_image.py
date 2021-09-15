@@ -12,6 +12,7 @@ import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 #import pyglew as glew
 
+
 from PIL import Image
 from PIL import ImageOps
 
@@ -184,6 +185,7 @@ def render_image(  render_to=None, print_out=True, border_color=None, bit_colors
     rescale_transp = 1
     if not rescale_transparency: rescale_transp = 0
     render_image_kernel( render_to,  np.int32(image_width), np.int32(image_height), np.float32(density), np.float32(brightness), np.float32(transferOffset), np.float32(transferScale), np.float32(box_xmin), np.float32(box_ymin), np.float32(box_zmin), np.float32(box_xmax), np.float32(box_ymax), np.float32(box_zmax), np.int32(plot_border), np.int32(rescale_transp), grid=grid2D_GL, block = block2D_GL, texrefs=[tex, transferTex] )
+    cuda.Context.synchronize()
     if print_out: print( 'Finished Render')
 
 

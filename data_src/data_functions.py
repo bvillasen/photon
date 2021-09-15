@@ -144,7 +144,7 @@ def prepare_data( data_dic,  data_parameters, stats=None, print_out=True, output
       plotData = np.sqrt(plotData) 
       data_max = plotData.max()
       data_min = plotData.min()
-  print( f' Native  max:{plotData.max()}   min:{plotData.min()} ' )
+  print( f' Native   min:{plotData.min()}   max:{plotData.max()}  ' )
   if 'min_data' in data_parameters: data_min = data_parameters['min_data']
   else: data_min = plotData.min()
   if 'max_data' in data_parameters: data_max = data_parameters['max_data'] 

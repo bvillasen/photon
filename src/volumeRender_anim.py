@@ -14,12 +14,9 @@ import pycuda.gpuarray as gpuarray
 import matplotlib.colors as cl
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
-#import pyglew as glew
-
 from PIL import Image
 from PIL import ImageOps
 from color_functions import get_color_data_from_colormap, availble_colormaps, get_transfer_function
-
 
 #Add Modules from other directories
 currentDirectory = os.getcwd()
@@ -69,9 +66,6 @@ colorMap = []
 
 render_parameters = {}
 
-scaleX = 1.0
-scaley = 1.0
-scaleZ = 1.0
 
 rescale_transparency = 0
 
@@ -87,10 +81,12 @@ transferFuncArray_d = None
 
 #Image Parameters
 scaleX = 1
+scaleY = 1
+scaleZ = 1
 separation = 0.
 
 #Ouput Imahe number
-n_image = 0
+n_output_image = 0
 
 # Cuda Parameters
 block2D_GL = (32, 32, 1)
@@ -117,15 +113,15 @@ output_dir = None
 
 
 def save_image(dir='', image_name='image'):
-  global n_image
+  global n_output_image
   glPixelStorei(GL_PACK_ALIGNMENT, 1)
   width = nTextures * width_GL
   data = glReadPixels(0, 0, width, height_GL, GL_RGBA, GL_UNSIGNED_BYTE)
   image = Image.frombytes("RGBA", (width, height_GL), data)
   image = ImageOps.flip(image) # in my case image is flipped top-bottom for some reason
-  image_file_name = '{0}_{1}.png'.format(image_name, n_image)
+  image_file_name = '{0}_{1}.png'.format(image_name, n_output_image)
   image.save(dir+image_file_name, 'PNG')
-  n_image += 1
+  n_output_image += 1
   print( 'Image saved: {0}'.format(image_file_name))
 
 
@@ -163,7 +159,6 @@ def render(  invViewMatrix_list ):
     
     colorData = get_transfer_function( i, parameters, bit_colors=bit_colors )
     set_transfer_function( colorData, print_out=False  )
-    
     # set_transfer_function( transp_type, i, transp_ramp, transp_center )
     
     cuda.memcpy_htod( c_invViewMatrix,  invViewMatrix_list[i])
@@ -182,7 +177,11 @@ def render(  invViewMatrix_list ):
   
 
 def get_model_view_matrix( indx=0 ):
+  global scaleX, scaleY, scaleZ
   modelView = np.ones(16)
+  scaleX = float(scaleX)
+  scaleY = float(scaleY)
+  scaleZ = float(scaleZ)
   glMatrixMode(GL_MODELVIEW)
   glPushMatrix()
   glLoadIdentity()
@@ -296,7 +295,6 @@ def initGL( show_to_screen=True ):
   #glutInitWindowPosition(50, 50)
   if show_to_screen:glutCreateWindow( windowTitle )
   GL_initialized = True
-  
   print( "OpenGL initialized")
 
 
@@ -344,52 +342,6 @@ def set_transfer_function( colorData, print_out=True  ):
   transferTex.set_address_mode(1, cuda.address_mode.CLAMP)
   transferTex.set_array(transferFuncArray_d)
   if print_out: print( f'Set Tranfer Function' )
-  # transfer_function_set = True
-# def set_transfer_function( transp_type, cmap_indx, transp_ramp, transp_center ):
-#   global changed_colormap, transfer_function_set
-# 
-#   # if transfer_function_set: return
-# 
-#   transp_center , transp_ramp = np.float32(transp_center), np.float32(transp_ramp)
-#   nSamples = 256
-#   # nSamples *= 64 #10-bit color 
-# 
-#   if render_parameters[cmap_indx]['colormap'] == {}:
-# 
-#     colorMap_main_types = availble_colormaps.keys()
-#     n_color_main = len( colorMap_main_types)
-# 
-#     colorMap_main = colorMap_main_types[color_first_index%n_color_main]
-# 
-#     colorMap_names = availble_colormaps[colorMap_main].keys()
-#     n_color_names = len(colorMap_names)
-# 
-#     colorMap_name = colorMap_names[color_second_index%n_color_names]
-#     colorMap_type = availble_colormaps[colorMap_main][colorMap_name]['color_type']
-# 
-#   else:
-#     colorMap_name = render_parameters[cmap_indx]['colormap']
-# 
-#   colorData = get_color_data_from_colormap( colorMap_name, nSamples )
-# 
-#   transp_vals = np.linspace(-1,1,nSamples)
-#   if transp_type == 'linear':transparency = linear_tansp( transp_vals, transp_center, transp_ramp )**2
-#   if transp_type == 'sigmoid':transparency = sigmoid( transp_vals, transp_center, transp_ramp )**2
-#   if transp_type == 'gaussian':transparency = gaussian( transp_vals, transp_center, transp_ramp )
-#   if transp_type == 'flat': transparency =  np.ones_like( transp_vals ) * 0.9
-#   # colorData[:,3] = (colorVals)**2
-#   colorData[:,3] = (transparency )
-#   colorData[-1,:] = 1
-#   transferFunc = colorData.copy()
-#   transferFuncArray_d, desc = np2DtoCudaArray( transferFunc )
-#   transferTex.set_flags(cuda.TRSF_NORMALIZED_COORDINATES)
-#   transferTex.set_filter_mode(cuda.filter_mode.LINEAR)
-#   transferTex.set_address_mode(0, cuda.address_mode.CLAMP)
-#   transferTex.set_address_mode(1, cuda.address_mode.CLAMP)
-#   transferTex.set_array(transferFuncArray_d)
-#   if not transfer_function_set: print( f'Set Tranfer Function' )
-#   transfer_function_set = True
-
 
   
 initialized_CUDA = False
@@ -618,7 +570,7 @@ def keyboard(*args):
     #cuda.gl.Context.pop()
     sys.exit()  
   if key == 'z':
-      print( "Saving Image: {0}".format( n_image))
+      print( "Saving Image: {0}".format( n_output_image))
       save_image(dir=output_dir, image_name='image')
   if key == 'q':
     render_parameters[0]['transp_center'] -= np.float32(0.01)
