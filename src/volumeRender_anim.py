@@ -66,6 +66,8 @@ colorMap = []
 
 render_parameters = {}
 
+print_rotation_angle = False
+
 
 rescale_transparency = 0
 
@@ -454,6 +456,7 @@ def mouse(button, state, x , y):
     buttonState = 0
   ox = x
   oy = y
+  if print_rotation_angle: print( f'Rotation angle: {viewRotation}')
   glutPostRedisplay()
 
 def motion(x, y):
