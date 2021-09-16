@@ -69,6 +69,8 @@ volumeRender.scaleY = nx / ny
 volumeRender.scaleZ = nx / nz 
 volumeRender.initGL()
 volumeRender.output_dir = output_dir
+volumeRender.print_rotation_angle = True
+volumeRender.viewRotation = np.array([ 0., -40., 0. ]) 
 
 #Select CUDA Device
 useDevice = 0
