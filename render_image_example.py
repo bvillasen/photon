@@ -92,7 +92,7 @@ rgba_data = np.zeros( [image_height, image_width, 4], dtype=np.uint8 )
 for i in range(4): rgba_data[:,:, i] = image_data_h[i,:,:]
 
 # Save Image to PNG
-out_file_name = output_dir + f'render_image.png' 
+out_file_name = os.path.join(output_dir, f'render_image.png')
 image_rgba = Image.fromarray( rgba_data )
 image_rgb = image_rgba.convert('RGB')
 image_rgb.save( out_file_name )
