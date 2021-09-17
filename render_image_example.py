@@ -31,20 +31,39 @@ output_dir = os.path.join(data_dir, 'render_images')
 #output_dir = '/home/bruno/Desktop/'
 create_directory( output_dir )
 
+# Data from file
+input_file_name = '/home/xavier/Desktop/mhws/mhws_for_bruno.h5'
+
+file = h5.File( input_file_name, 'r' )
+grid = file['grid'][...]
+n_cut = 70
+grid = grid[n_cut:-n_cut,::]
 
 n_fields_to_render = 1
-data_parameters = { 'type': 'random', 
-  'dims':[512, 512, 512], 
+data_parameters = { 
+'type': 'field', 
+'data': grid,
+#  'dims':[512, 512, 512], 
   'log_data': False, 
   'normalization':'local', 
-  'n_border':0 
+  'min_data': 0,  
+  'n_border':1  # was 0 
 }
 
 n_image = 0
-data_to_render_list = [ get_Data_to_Render( data_parameters ) for i in range(n_fields_to_render)]
+data_to_render_list = [ get_Data_to_Render(
+    data_parameters ) for i in range(n_fields_to_render)]
 
-volumeRender.render_parameters[0] = { 'transp_type':'flat',  'density':.05, "brightness":1.0, 'transfer_offset': 0.0, 'transfer_scale': 1. }
+volumeRender.render_parameters[0] = { 'transp_type':'flat',  
+                                     'density':.05, 
+                                     "brightness":1.2, 
+                                     'transfer_offset': 0.0, 
+                                     'transfer_scale': 1. }
 volumeRender.render_parameters[0]['colormap'] = 'jet'
+volumeRender.render_parameters[0]['transp_type'] = 'linear'  
+volumeRender.render_parameters[0]['transp_min'] = 0.0  
+volumeRender.render_parameters[0]['transp_max'] = 1.0  
+volumeRender.render_parameters[0]['output_transfer'] = output_dir
 
 #Get Dimensions of the data to render
 nz, ny, nx = data_to_render_list[0].shape
@@ -76,19 +95,20 @@ gpu_array_list, gpu_array_fixed_list,  copyToScreen_list = gpu_data.Initialize_G
 for i in range(n_fields_to_render):  copyToScreen_list[i]
 
 # Create Array for the Image 
-image_data_h = np.zeros( [4, image_height, image_width], dtype=np.int32 )
+image_data_h = np.zeros( [4, image_height, image_width], 
+                        dtype=np.int32 )
 image_data_d = gpuarray.to_gpu( image_data_h )
 
 # Apply a rotation of the data
-rotation_angle = 20
-volumeRender.viewRotation[1] = rotation_angle
+volumeRender.viewRotation = [-11.6, -44.4, 0. ]
 
 # Render the Image
 volumeRender.render_image( render_to=image_data_d )
 image_data_h = image_data_d.get()
 
 # Reshape the image to RGBA
-rgba_data = np.zeros( [image_height, image_width, 4], dtype=np.uint8 )
+rgba_data = np.zeros( [image_height, image_width, 4], 
+                     dtype=np.uint8 )
 for i in range(4): rgba_data[:,:, i] = image_data_h[i,:,:]
 
 # Save Image to PNG

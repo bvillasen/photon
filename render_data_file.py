@@ -18,8 +18,6 @@ import gpu_data
 output_dir  = '/home/xavier/Desktop/mhws/'
 input_file_name = '/home/xavier/Desktop/mhws/mhws_for_bruno.h5'
 
-
-
 file = h5.File( input_file_name, 'r' )
 grid = file['grid'][...]
 n_cut = 70
@@ -42,10 +40,14 @@ rotation_angle = 60
 n_image = 0
 
 
-data_to_render_list = [ get_Data_to_Render( data_parameters ) for i in range(nFields)]
+data_to_render_list = [ get_Data_to_Render(
+    data_parameters ) for i in range(nFields)]
 
 # Image parameters
-volumeRender.render_parameters[0] = { 'density':.05, "brightness":1.2, 'transfer_offset': 0.0, 'transfer_scale': 1. }
+volumeRender.render_parameters[0] = { 'density':.05, 
+                                     "brightness":1.2, 
+                                     'transfer_offset': 0.0, 
+                                     'transfer_scale': 1. }
 volumeRender.render_parameters[0]['colormap'] = 'jet'
 volumeRender.render_parameters[0]['transp_type'] = 'linear'  
 volumeRender.render_parameters[0]['transp_min'] = 0.0  
