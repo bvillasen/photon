@@ -16,12 +16,12 @@ import gpu_data
 
 
 output_dir  = '/home/xavier/Desktop/mhws/'
-input_file_name = '/home/xavier/Desktop/mhws/mhws_for_bruno.h5'
+#input_file_name = '/home/xavier/Desktop/mhws/mhws_for_bruno.h5'
+input_file_name = '/home/xavier/Desktop/mhws/mhws_for_bruno_2019_1474962.h5'
 
 file = h5.File( input_file_name, 'r' )
 grid = file['grid'][...]
-n_cut = 70
-grid = grid[n_cut:-n_cut,::]
+grid = grid[:,:,0:200] #n_cut:-n_cut
 
 
 
@@ -73,6 +73,10 @@ volumeRender.initGL()
 volumeRender.output_dir = output_dir
 volumeRender.print_rotation_angle = True
 volumeRender.viewRotation = np.array([ 0., -40., 0. ]) 
+
+# Possible viewing angles
+#   Rotation angle: [-36.2  35.    0. ]
+
 
 #Select CUDA Device
 useDevice = 0
