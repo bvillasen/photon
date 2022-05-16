@@ -19,6 +19,8 @@ from data_functions import *
 import gpu_data
 from tools import create_directory
 
+from IPython import embed
+
 #Select CUDA Device
 useDevice = 0
 
@@ -36,6 +38,8 @@ input_file_name = '/home/xavier/Desktop/mhws/mhws_for_bruno.h5'
 
 file = h5.File( input_file_name, 'r' )
 grid = file['grid'][...]
+#embed(header='41 of image example')
+
 n_cut = 70
 grid = grid[n_cut:-n_cut,::]
 

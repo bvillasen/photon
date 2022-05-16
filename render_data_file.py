@@ -14,6 +14,11 @@ from cudaTools import setCudaDevice, getFreeMemory, gpuArray3DtocudaArray, np3Dt
 from data_functions import *
 import gpu_data
 
+from IPython import embed
+
+'''
+USE render_image_example
+'''
 
 output_dir  = '/home/xavier/Desktop/mhws/'
 #input_file_name = '/home/xavier/Desktop/mhws/mhws_for_bruno.h5'
@@ -21,7 +26,8 @@ input_file_name = '/home/xavier/Desktop/mhws/mhws_for_bruno_2019_1474962.h5'
 
 file = h5.File( input_file_name, 'r' )
 grid = file['grid'][...]
-grid = grid[:,:,0:200] #n_cut:-n_cut
+
+#grid = grid[:,:,0:200] #n_cut:-n_cut
 
 
 
