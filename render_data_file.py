@@ -14,43 +14,52 @@ from cudaTools import setCudaDevice, getFreeMemory, gpuArray3DtocudaArray, np3Dt
 from data_functions import *
 import gpu_data
 
+from IPython import embed
 
-output_dir  = '/home/bruno/Desktop/'
-input_file_name = '/home/bruno/Desktop/ssd_0/data/render_images/ocean/data/' + 'mhws_for_bruno.h5'
+'''
+USE render_image_example
+'''
 
+output_dir  = '/home/xavier/Desktop/mhws/'
+#input_file_name = '/home/xavier/Desktop/mhws/mhws_for_bruno.h5'
+input_file_name = '/home/xavier/Desktop/mhws/mhws_for_bruno_2019_1474962.h5'
 
 file = h5.File( input_file_name, 'r' )
 grid = file['grid'][...]
-n_cut = 70
-grid = grid[n_cut:-n_cut,::]
+
+#grid = grid[:,:,0:200] #n_cut:-n_cut
 
 
 
 nFields = 1
 data_parameters = { 
- 'type': 'field', 
- 'data': grid,
- 'log_data': False, 
- 'normalization':'local',
- # 'max_data': 2.1501,
- 'min_data': 0,  
- 'n_border':1
+'type': 'field', 
+'data': grid,
+'log_data': False, 
+'normalization':'local',
+# 'max_data': 2.1501,
+'min_data': 0,  
+'n_border':1
 }
 
 rotation_angle = 60
 n_image = 0
 
 
-data_to_render_list = [ get_Data_to_Render( data_parameters ) for i in range(nFields)]
+data_to_render_list = [ get_Data_to_Render(
+    data_parameters ) for i in range(nFields)]
 
-
-volumeRender.render_parameters[0] = { 'density':.05, "brightness":1.2, 'transfer_offset': 0.0, 'transfer_scale': 1. }
+# Image parameters
+volumeRender.render_parameters[0] = { 'density':.05, 
+                                     "brightness":1.2, 
+                                     'transfer_offset': 0.0, 
+                                     'transfer_scale': 1. }
 volumeRender.render_parameters[0]['colormap'] = 'jet'
 volumeRender.render_parameters[0]['transp_type'] = 'linear'  
 volumeRender.render_parameters[0]['transp_min'] = 0.0  
 volumeRender.render_parameters[0]['transp_max'] = 1.0  
 volumeRender.render_parameters[0]['output_transfer'] = output_dir
-  
+
 
 
 #Get Dimensions of the data to render
@@ -70,6 +79,10 @@ volumeRender.initGL()
 volumeRender.output_dir = output_dir
 volumeRender.print_rotation_angle = True
 volumeRender.viewRotation = np.array([ 0., -40., 0. ]) 
+
+# Possible viewing angles
+#   Rotation angle: [-36.2  35.    0. ]
+
 
 #Select CUDA Device
 useDevice = 0
@@ -96,19 +109,19 @@ volumeRender.bit_colors = { 255: (255, 255, 255, 255) }
 ########################################################################
 send_data = True
 def sendToScreen( ):
-  global send_data
-  if send_data:
-    for i in range(nFields): 
-      copyToScreen_list[i]
-    send_data = False 
+    global send_data
+    if send_data:
+        for i in range(nFields): 
+            copyToScreen_list[i]
+            send_data = False 
 ########################################################################
 
 def stepFunction():
-  global  nSnap
-  # volumeRender.render_parameters[0]['transp_center'] = volumeRender.set_transparency_center( nSnap, z)
-  # print "Transparency center = {0}".format(volumeRender.render_parameters[0]['transp_center'])
-  # volumeRender.Change_Rotation_Angle( rotation_angle )
-  sendToScreen( )
+    global  nSnap
+    # volumeRender.render_parameters[0]['transp_center'] = volumeRender.set_transparency_center( nSnap, z)
+    # print "Transparency center = {0}".format(volumeRender.render_parameters[0]['transp_center'])
+    # volumeRender.Change_Rotation_Angle( rotation_angle )
+    sendToScreen( )
 
 
 ########################################################################
@@ -119,3 +132,7 @@ volumeRender.keyboard = volumeRender.keyboard
 #run volumeRender animation
 volumeRender.animate()
 
+
+# Command line execution
+#if __name__ == '__main__':
+#    main()

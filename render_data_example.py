@@ -15,7 +15,7 @@ from data_functions import *
 import gpu_data
 from keyboard_functions import keyboard, specialKeyboardFunc
 
-output_dir  = '/home/bruno/Desktop/'
+output_dir  = '/home/xavier/Desktop/'
 
 #Select CUDA Device
 useDevice = 0
